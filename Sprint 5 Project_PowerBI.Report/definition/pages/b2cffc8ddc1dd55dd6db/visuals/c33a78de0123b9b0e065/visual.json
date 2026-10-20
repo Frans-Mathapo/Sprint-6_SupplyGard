@@ -1,0 +1,284 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "c33a78de0123b9b0e065",
+  "position": {
+    "x": 502,
+    "y": 276,
+    "z": 7002,
+    "height": 752,
+    "width": 1240,
+    "tabOrder": 7002
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "delivery_id"
+                }
+              },
+              "queryRef": "deliveries.delivery_id",
+              "nativeQueryRef": "delivery_id"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "delivery_distance_km"
+                }
+              },
+              "queryRef": "Sum(deliveries.delivery_distance_km)",
+              "nativeQueryRef": "delivery_distance_km"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "delivery_duration_hours"
+                }
+              },
+              "queryRef": "Sum(deliveries.delivery_duration_hours)",
+              "nativeQueryRef": "delivery_duration_hours1"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "Late Deliveries"
+                }
+              },
+              "queryRef": "deliveries.Late Deliveries",
+              "nativeQueryRef": "Late Deliveries"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "Long Distance Score"
+                }
+              },
+              "queryRef": "Sum(deliveries.Long Distance Score)",
+              "nativeQueryRef": "Long Distance Score"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "Long Duration Score"
+                }
+              },
+              "queryRef": "Sum(deliveries.Long Duration Score)",
+              "nativeQueryRef": "Long Duration Score"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "High Risk Route Score"
+                }
+              },
+              "queryRef": "Sum(deliveries.High Risk Route Score)",
+              "nativeQueryRef": "High Risk Route Score"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "Operational Risk Score"
+                }
+              },
+              "queryRef": "deliveries.Operational Risk Score",
+              "nativeQueryRef": "Operational Risk Score"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "Risk Category"
+                }
+              },
+              "queryRef": "deliveries.Risk Category",
+              "nativeQueryRef": "Risk Category"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "deliveries"
+                  }
+                },
+                "Property": "Operational Risk Score"
+              }
+            },
+            "direction": "Descending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "eaa667fb1b30c013151c",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "deliveries"
+              }
+            },
+            "Property": "Operational Risk Score"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "5368cc7d3800bd82d917",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "deliveries"
+              }
+            },
+            "Property": "delivery_id"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "9f1728aa15194609581e",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "deliveries"
+              }
+            },
+            "Property": "delivery_distance_km"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "40e8f28d4c806ab6bc08",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "deliveries"
+              }
+            },
+            "Property": "delivery_duration_hours"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "9af4d3078463d9e0889d",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "deliveries"
+              }
+            },
+            "Property": "Long Distance Score"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "60506ece500402b08150",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "deliveries"
+              }
+            },
+            "Property": "Long Duration Score"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "66681500b742915365dd",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "deliveries"
+              }
+            },
+            "Property": "High Risk Route Score"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

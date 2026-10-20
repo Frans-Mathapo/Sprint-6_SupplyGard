@@ -1,0 +1,66 @@
+table warehouses
+	lineageTag: 486cea74-a690-404c-b956-61a13c0f0bac
+
+	column warehouse_id
+		dataType: string
+		lineageTag: 450e059f-7914-4cb6-85bb-fc11514dc9b1
+		summarizeBy: none
+		sourceColumn: warehouse_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column warehouse_name
+		dataType: string
+		lineageTag: cf0736fb-c6f2-48f1-be9f-15b6eedcab05
+		summarizeBy: none
+		sourceColumn: warehouse_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: e2843d48-1b66-4bde-b107-abe873a62b2b
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column province
+		dataType: string
+		lineageTag: f1f17aab-e700-451c-943e-2d634e1d0a50
+		summarizeBy: none
+		sourceColumn: province
+
+		annotation SummarizationSetBy = Automatic
+
+	column warehouse_type
+		dataType: string
+		lineageTag: cdd122c7-dc85-4c98-939d-b8a9adb06e73
+		summarizeBy: none
+		sourceColumn: warehouse_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column capacity_units
+		dataType: int64
+		formatString: 0
+		lineageTag: 1e9926bd-82e3-4773-a122-980712c6858d
+		summarizeBy: none
+		sourceColumn: capacity_units
+
+		annotation SummarizationSetBy = Automatic
+
+	partition warehouses = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\E1023411\OneDrive - Sanlam Life Insurance Limited\Documents\Project\Sprint 5\supplyguard_data\supplyguard_data\warehouses.csv"),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"warehouse_id", type text}, {"warehouse_name", type text}, {"city", type text}, {"province", type text}, {"warehouse_type", type text}, {"capacity_units", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

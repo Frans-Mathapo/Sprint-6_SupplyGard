@@ -1,0 +1,112 @@
+table customers
+	lineageTag: 6215e2f0-36f4-44d0-ace1-0230105c5aac
+
+	measure 'Total Customers' = COUNT(customers[customer_id])
+		formatString: 0
+		lineageTag: 3b40b92e-30fa-4fc1-913a-2a23dfcb4983
+
+	measure 'Shipment Volumes' = COUNT(shipments[shipment_id])
+		formatString: 0
+		lineageTag: 44736939-d565-416b-99ec-208c1deae712
+
+	measure 'Shipment Frequency' = COUNT(shipments[shipment_id])
+		formatString: 0
+		lineageTag: e2c62414-d8d9-48ab-a9bb-0ee7b31414b8
+
+	column customer_id
+		dataType: string
+		lineageTag: b92921ef-9f16-4c0c-9773-d9bb06a42b8e
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_name
+		dataType: string
+		lineageTag: f60df507-0873-49f7-9a9f-8a62cd602d09
+		summarizeBy: none
+		sourceColumn: customer_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_type
+		dataType: string
+		lineageTag: 46f5001e-5ed8-4ab1-b9fe-c60f387e1e84
+		summarizeBy: none
+		sourceColumn: customer_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column province
+		dataType: string
+		lineageTag: 4f9d3f52-8dc2-42c7-80d5-70244c166d1d
+		summarizeBy: none
+		sourceColumn: province
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: bf3a241e-0b9b-46d6-b33c-e9387c7bd3b8
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column registration_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 53a76614-cb1b-42bf-922f-9d111d153e41
+		summarizeBy: none
+		sourceColumn: registration_date
+
+		variation Variation
+			isDefault
+			relationship: 1f39f3fa-bb36-4ae1-821d-465436ccc768
+			defaultHierarchy: LocalDateTable_4e45143d-5061-4ff3-b0c0-59b1258d1871.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column monthly_shipping_budget
+		dataType: double
+		lineageTag: ca63b7ec-f7b5-45b2-b7ab-d5145535dcec
+		summarizeBy: sum
+		sourceColumn: monthly_shipping_budget
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition customers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\E1023411\OneDrive - Sanlam Life Insurance Limited\Documents\Project\Sprint 5\supplyguard_data\supplyguard_data\customers.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"customer_id", type text}, {"customer_name", type text}, {"customer_type", type text}, {"province", type text}, {"city", type text}, {"registration_date", type date}, {"monthly_shipping_budget", type text}}),
+				    #"Removed Duplicates" = Table.Distinct(#"Changed Type", {"customer_id"}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Removed Duplicates","","Unknown",Replacer.ReplaceValue,{"customer_name"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","","Knnown",Replacer.ReplaceValue,{"customer_type"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","","Unknown",Replacer.ReplaceValue,{"customer_type"}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Replaced Value2",{{"province", Text.Trim, type text}}),
+				    #"Capitalized Each Word" = Table.TransformColumns(#"Trimmed Text",{{"province", Text.Proper, type text}}),
+				    #"Trimmed Text1" = Table.TransformColumns(#"Capitalized Each Word",{{"customer_type", Text.Trim, type text}}),
+				    #"Capitalized Each Word1" = Table.TransformColumns(#"Trimmed Text1",{{"customer_type", Text.Proper, type text}}),
+				    #"Trimmed Text2" = Table.TransformColumns(#"Capitalized Each Word1",{{"city", Text.Trim, type text}}),
+				    #"Capitalized Each Word2" = Table.TransformColumns(#"Trimmed Text2",{{"city", Text.Proper, type text}}),
+				    #"Capitalized Each Word3" = Table.TransformColumns(#"Capitalized Each Word2",{{"city", Text.Proper, type text}}),
+				    #"Filtered Rows" = Table.SelectRows(#"Capitalized Each Word3", each true),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Filtered Rows","","Unknown",Replacer.ReplaceValue,{"city"}),
+				    #"Filtered Rows1" = Table.SelectRows(#"Replaced Value3", each true),
+				    #"Replaced Value4" = Table.ReplaceValue(#"Filtered Rows1","","-1",Replacer.ReplaceValue,{"monthly_shipping_budget"}),
+				    #"Replaced Value5" = Table.ReplaceValue(#"Replaced Value4",".",",",Replacer.ReplaceText,{"monthly_shipping_budget"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value5",{{"monthly_shipping_budget", type number}, {"registration_date", type date}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

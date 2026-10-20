@@ -1,0 +1,52 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "3e5f66dc2500d0aa4957",
+  "position": {
+    "x": 1306.0017374909892,
+    "y": 229.40204432450417,
+    "z": 12000,
+    "height": 354.32394964972923,
+    "width": 592.81122345243159,
+    "tabOrder": 12000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "customers"
+                    }
+                  },
+                  "Property": "province"
+                }
+              },
+              "queryRef": "customers.province",
+              "nativeQueryRef": "province"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "customers"
+                    }
+                  },
+                  "Property": "Shipment Volumes"
+                }
+              },
+              "queryRef": "customers.Shipment Volumes",
+              "nativeQueryRef": "Shipment Volumes"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

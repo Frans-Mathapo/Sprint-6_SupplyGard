@@ -1,0 +1,53 @@
+table exchange_rates
+	lineageTag: a2f991e0-a7d2-4655-ae0a-28cc64080d07
+
+	column date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5d3d7847-ff1a-49f8-b7a6-d3eecedd0fe9
+		summarizeBy: none
+		sourceColumn: date
+
+		variation Variation
+			isDefault
+			relationship: 8f0d3314-7abe-4b59-bbe1-0d06e8c2186e
+			defaultHierarchy: LocalDateTable_7e036313-6a5e-47da-86a2-48a25340d394.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column currency
+		dataType: string
+		lineageTag: 53367b0f-c444-490e-84a4-b475a8d66d9a
+		summarizeBy: none
+		sourceColumn: currency
+
+		annotation SummarizationSetBy = Automatic
+
+	column zar_rate
+		dataType: double
+		lineageTag: b0eeb6b3-ae2c-42fd-a523-dd16b955bdf4
+		summarizeBy: sum
+		sourceColumn: zar_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition exchange_rates = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\E1023411\OneDrive - Sanlam Life Insurance Limited\Documents\Project\Sprint 5\supplyguard_data\supplyguard_data\exchange_rates.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"date", type date}, {"currency", type text}, {"zar_rate", type text}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Changed Type",".",",",Replacer.ReplaceText,{"zar_rate"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value",{{"zar_rate", type number}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

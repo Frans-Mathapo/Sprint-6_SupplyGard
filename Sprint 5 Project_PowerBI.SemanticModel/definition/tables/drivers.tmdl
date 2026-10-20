@@ -1,0 +1,94 @@
+table drivers
+	lineageTag: a5bfdc75-8257-4dda-b1e4-b719463cb8ab
+
+	column driver_id
+		dataType: string
+		lineageTag: 48bd641c-d203-443a-8dda-4807157acd02
+		summarizeBy: none
+		sourceColumn: driver_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column driver_name
+		dataType: string
+		lineageTag: 6e0197c4-c13f-49c8-a5a2-861304a9c9a3
+		summarizeBy: none
+		sourceColumn: driver_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column age
+		dataType: int64
+		formatString: 0
+		lineageTag: 0974ed77-f77c-44df-b431-b3723842743b
+		summarizeBy: none
+		sourceColumn: age
+
+		annotation SummarizationSetBy = Automatic
+
+	column experience_years
+		dataType: int64
+		formatString: 0
+		lineageTag: 2ddb33de-b10a-43b2-9502-36fe2636345c
+		summarizeBy: none
+		sourceColumn: experience_years
+
+		annotation SummarizationSetBy = Automatic
+
+	column license_type
+		dataType: string
+		lineageTag: 199f91d9-d9d3-4ce5-b573-0ae704510ebd
+		summarizeBy: none
+		sourceColumn: license_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column employment_type
+		dataType: string
+		lineageTag: 4d89b624-f03a-48d9-bd6d-78d1334e27d9
+		summarizeBy: none
+		sourceColumn: employment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column home_province
+		dataType: string
+		lineageTag: a8896a5c-7e9a-461f-b76b-c94c2323c01b
+		summarizeBy: none
+		sourceColumn: home_province
+
+		annotation SummarizationSetBy = Automatic
+
+	column performance_rating
+		dataType: double
+		lineageTag: 76e756ab-719d-4486-937a-39d751e4841d
+		summarizeBy: none
+		sourceColumn: performance_rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition drivers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\E1023411\OneDrive - Sanlam Life Insurance Limited\Documents\Project\Sprint 5\supplyguard_data\supplyguard_data\drivers.csv"),[Delimiter=",", Columns=8, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"driver_id", type text}, {"driver_name", type text}, {"age", Int64.Type}, {"experience_years", Int64.Type}, {"license_type", type text}, {"employment_type", type text}, {"home_province", type text}, {"performance_rating", type text}}),
+				    #"Removed Duplicates" = Table.Distinct(#"Changed Type", {"driver_id"}),
+				    #"Capitalized Each Word" = Table.TransformColumns(#"Removed Duplicates",{{"driver_name", Text.Proper, type text}}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Capitalized Each Word",{{"license_type", Text.Trim, type text}}),
+				    #"Capitalized Each Word1" = Table.TransformColumns(#"Trimmed Text",{{"license_type", Text.Proper, type text}, {"employment_type", Text.Proper, type text}}),
+				    #"Trimmed Text1" = Table.TransformColumns(#"Capitalized Each Word1",{{"employment_type", Text.Trim, type text}, {"home_province", Text.Trim, type text}}),
+				    #"Capitalized Each Word2" = Table.TransformColumns(#"Trimmed Text1",{{"home_province", Text.Proper, type text}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Capitalized Each Word2",".",",",Replacer.ReplaceText,{"performance_rating"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value",{{"performance_rating", type number}, {"experience_years", Int64.Type}, {"age", Int64.Type}}),
+				    #"Removed Duplicates1" = Table.Distinct(#"Changed Type1", {"driver_id"})
+				in
+				    #"Removed Duplicates1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

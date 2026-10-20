@@ -1,0 +1,126 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 334.12144020466724,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 952.36163941535983,
+            "y": 0
+          },
+          "nodeIndex": "shipments",
+          "nodeLineageTag": "536a2b6f-da6a-4bfb-a320-d382155d7c55",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 1372.3616394153598,
+            "y": 26
+          },
+          "nodeIndex": "customers",
+          "nodeLineageTag": "6215e2f0-36f4-44d0-ace1-0230105c5aac",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 334.1847511806298,
+            "y": -25
+          },
+          "nodeIndex": "deliveries",
+          "nodeLineageTag": "8bd2bc56-52ea-46e0-8bc8-d1ab7dd97797",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 520.36163941535983,
+            "y": 415.32499263243517
+          },
+          "nodeIndex": "drivers",
+          "nodeLineageTag": "a5bfdc75-8257-4dda-b1e4-b719463cb8ab",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 0
+          },
+          "nodeIndex": "vehicles",
+          "nodeLineageTag": "e9a7cc1f-04b0-4870-9624-310f0ba71655",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 952.36163941535983,
+            "y": 526
+          },
+          "nodeIndex": "warehouses",
+          "nodeLineageTag": "486cea74-a690-404c-b956-61a13c0f0bac",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 246.36163941535983,
+            "y": 464
+          },
+          "nodeIndex": "delivery_labels",
+          "nodeLineageTag": "78aabb3d-0f81-47ec-a049-2b789664a309",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 1930.3616394153598,
+            "y": 66
+          },
+          "nodeIndex": "exchange_rates",
+          "nodeLineageTag": "a2f991e0-a7d2-4655-ae0a-28cc64080d07",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 4
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 80.210356999489676,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

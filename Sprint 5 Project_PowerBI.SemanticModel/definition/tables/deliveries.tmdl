@@ -1,0 +1,247 @@
+table deliveries
+	lineageTag: 8bd2bc56-52ea-46e0-8bc8-d1ab7dd97797
+
+	measure 'Distance 75th Percentile' =
+			
+			PERCENTILEX.INC(
+			    deliveries,
+			    deliveries[delivery_distance_km],
+			    0.75
+			)
+		lineageTag: bc863ef1-129a-4960-bc66-23e60270104c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Late Deliveries' =
+			
+			CALCULATE(
+			    COUNTROWS(delivery_labels),
+			    delivery_labels[is_late] = 1
+			)
+		formatString: 0
+		lineageTag: 0b165fd3-7926-4cbc-8794-c65d2f95909a
+
+	measure 'Duration 75th Percentile' =
+			
+			PERCENTILEX.INC(
+			    deliveries,
+			    deliveries[delivery_duration_hours],
+			    0.75
+			)
+		lineageTag: d490f9ad-ace7-4921-b665-251bd9895a34
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Repeated Customer Delay Score' =
+			
+			IF(
+			    [Late Deliveries] >= 2,
+			    20,
+			    0
+			)
+		formatString: 0
+		lineageTag: 57239d3e-fab5-464f-af7f-9b2fac4e6bba
+
+	measure 'Operational Risk Score' =
+			
+			MAX(delivery_labels[Late Delivery Score]) +
+			MAX(deliveries[Long Distance Score]) +
+			MAX(deliveries[Long Duration Score]) +
+			MAX(deliveries[High Risk Route Score]) +
+			[Repeated Customer Delay Score]
+		formatString: 0
+		lineageTag: 5e926a71-5d64-4039-862d-a95bc2a0f7ef
+
+	measure 'Risk Category' =
+			
+			VAR Score = [Operational Risk Score]
+			
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    Score <= 30, "Low Risk",
+			    Score <= 60, "Medium Risk",
+			    Score <= 100, "High Risk",
+			    "Check Score"
+			)
+		lineageTag: 0c0c070f-8502-43c3-b6df-57f06fb36b3b
+
+	column delivery_id
+		dataType: string
+		lineageTag: a598f4ea-a35b-4784-ba30-b3319c8cb1d5
+		summarizeBy: none
+		sourceColumn: delivery_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipment_id
+		dataType: string
+		lineageTag: 972adf69-a500-4b46-9fee-97b506e75036
+		summarizeBy: none
+		sourceColumn: shipment_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column driver_id
+		dataType: string
+		lineageTag: ad5a2405-f3dd-4912-b296-8cf2e7bb0cad
+		summarizeBy: none
+		sourceColumn: driver_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column vehicle_id
+		dataType: string
+		lineageTag: c43361b9-7cb1-4300-9f4e-6fcaafa6e800
+		summarizeBy: none
+		sourceColumn: vehicle_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivery_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 87f37ce0-ac77-4c17-8fe3-3a6d62b3162e
+		summarizeBy: none
+		sourceColumn: delivery_date
+
+		variation Variation
+			isDefault
+			relationship: 59144d42-45fc-4c22-8284-9c150bd628ed
+			defaultHierarchy: LocalDateTable_93a34f84-203c-4d90-a167-fe1b869952f4.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column delivery_status
+		dataType: string
+		lineageTag: 672f91a9-b18e-4425-aba2-0d544e8e273b
+		summarizeBy: none
+		sourceColumn: delivery_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivery_duration_hours
+		dataType: double
+		lineageTag: 04b49954-ed96-4c0d-a023-73d1c528d401
+		summarizeBy: sum
+		sourceColumn: delivery_duration_hours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column delivery_distance_km
+		dataType: double
+		lineageTag: 5b3e5007-9c0e-445f-9475-5e182efb059b
+		summarizeBy: sum
+		sourceColumn: delivery_distance_km
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column fuel_cost_zar
+		dataType: double
+		lineageTag: 543bebdb-ee68-4bc6-bbc7-966e3a840999
+		summarizeBy: sum
+		sourceColumn: fuel_cost_zar
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column customer_rating
+		dataType: double
+		lineageTag: fd0d4a94-d391-442f-a253-34092e868a02
+		summarizeBy: sum
+		sourceColumn: customer_rating
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column attempt_number
+		dataType: int64
+		formatString: 0
+		lineageTag: d35ed843-f7ee-4bb8-832c-d444bc549eda
+		summarizeBy: sum
+		sourceColumn: attempt_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivery_hour
+		dataType: int64
+		formatString: 0
+		lineageTag: 0840e0e4-2194-4f11-be3c-07ad25780000
+		summarizeBy: sum
+		sourceColumn: delivery_hour
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Long Distance Score' =
+			
+			IF(
+			    deliveries[delivery_distance_km] > 509.70,
+			    15,
+			    0
+			)
+		formatString: 0
+		lineageTag: e78c32f6-0ff9-404b-aa50-ab8ab6acdae1
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Long Duration Score' =
+			
+			IF(
+			    deliveries[delivery_duration_hours] > 9.02,
+			    20,
+			    0
+			)
+		formatString: 0
+		lineageTag: e59b2760-3f0b-41aa-8bda-73fc7effab39
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'High Risk Route Score' =
+			
+			IF(
+			    [Long Distance Score] = 15 &&
+			    [Long Duration Score] = 20,
+			    20,
+			    0
+			)
+		formatString: 0
+		lineageTag: 2d3dab3e-ab76-4563-8c81-768a5c50d053
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition deliveries = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\E1023411\OneDrive - Sanlam Life Insurance Limited\Documents\Project\Sprint 5\supplyguard_data\supplyguard_data\deliveries.csv"),[Delimiter=",", Columns=12, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"delivery_id", type text}, {"shipment_id", type text}, {"driver_id", type text}, {"vehicle_id", type text}, {"delivery_date", type date}, {"delivery_status", type text}, {"delivery_duration_hours", type text}, {"delivery_distance_km", type text}, {"fuel_cost_zar", type text}, {"customer_rating", type text}, {"attempt_number", Int64.Type}, {"delivery_hour", Int64.Type}}),
+				    #"Removed Duplicates" = Table.Distinct(#"Changed Type", {"delivery_id"}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Removed Duplicates",{{"delivery_status", Text.Trim, type text}}),
+				    #"Capitalized Each Word" = Table.TransformColumns(#"Trimmed Text",{{"delivery_status", Text.Proper, type text}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Capitalized Each Word",".",",",Replacer.ReplaceText,{"delivery_duration_hours"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value",{{"delivery_duration_hours", type number}}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Changed Type1",".",",",Replacer.ReplaceText,{"delivery_distance_km"}),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Replaced Value1",{{"delivery_distance_km", type number}}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Changed Type2",".",",",Replacer.ReplaceText,{"fuel_cost_zar"}),
+				    #"Changed Type3" = Table.TransformColumnTypes(#"Replaced Value2",{{"fuel_cost_zar", type number}}),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Changed Type3",".",",",Replacer.ReplaceText,{"customer_rating"}),
+				    #"Changed Type4" = Table.TransformColumnTypes(#"Replaced Value3",{{"customer_rating", type number}, {"delivery_date", type date}})
+				in
+				    #"Changed Type4"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

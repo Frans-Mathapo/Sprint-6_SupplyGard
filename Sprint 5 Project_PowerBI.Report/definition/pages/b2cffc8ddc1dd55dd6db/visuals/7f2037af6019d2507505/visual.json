@@ -1,0 +1,74 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "7f2037af6019d2507505",
+  "position": {
+    "x": 1066,
+    "y": 132,
+    "z": 7001,
+    "height": 144,
+    "width": 676,
+    "tabOrder": 7001
+  },
+  "visual": {
+    "visualType": "cardVisual",
+    "query": {
+      "queryState": {
+        "Data": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "deliveries"
+                    }
+                  },
+                  "Property": "Duration 75th Percentile"
+                }
+              },
+              "queryRef": "deliveries.Duration 75th Percentile",
+              "nativeQueryRef": "Duration 75th Percentile"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "deliveries"
+                  }
+                },
+                "Property": "Duration 75th Percentile"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "d66c10ac0e66067934bc",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "deliveries"
+              }
+            },
+            "Property": "Duration 75th Percentile"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
+  }
+}

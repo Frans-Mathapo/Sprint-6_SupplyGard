@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Sprint 5 Project_PowerBI"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "1fa58770-b82b-4189-9fc9-1d29333aabcd"
+  }
+}

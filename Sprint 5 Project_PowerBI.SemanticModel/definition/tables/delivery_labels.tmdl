@@ -1,0 +1,67 @@
+table delivery_labels
+	lineageTag: 78aabb3d-0f81-47ec-a049-2b789664a309
+
+	measure 'Delayed Deliveries' =
+			
+			CALCULATE(
+			COUNTROWS(delivery_labels),
+			delivery_labels[is_late] = 1
+			)
+		formatString: 0
+		lineageTag: 87bfabe1-4f48-41f8-9fc6-87319c0f707a
+
+	column delivery_id
+		dataType: string
+		lineageTag: 329daa7f-6dcf-4401-9136-bafce1e20cf3
+		summarizeBy: none
+		sourceColumn: delivery_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_late
+		dataType: int64
+		formatString: 0
+		lineageTag: 43e84daf-cba9-4159-b880-034423978ce7
+		summarizeBy: none
+		sourceColumn: is_late
+
+		annotation SummarizationSetBy = Automatic
+
+	column risk_reason
+		dataType: string
+		lineageTag: 38ae1fc3-3958-4357-bc13-3671e821dbec
+		summarizeBy: none
+		sourceColumn: risk_reason
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Late Delivery Score' =
+			
+			IF(
+			    delivery_labels[is_late] = 1,
+			    25,
+			    0
+			)
+		formatString: 0
+		lineageTag: 05a6cd4c-ae9c-481d-a515-40776fc4191b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition delivery_labels = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\E1023411\OneDrive - Sanlam Life Insurance Limited\Documents\Project\Sprint 5\supplyguard_data\supplyguard_data\delivery_labels.csv"),[Delimiter=",", Columns=3, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"delivery_id", type text}, {"is_late", Int64.Type}, {"risk_reason", type text}}),
+				    #"Removed Duplicates" = Table.Distinct(#"Changed Type", {"delivery_id"}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Removed Duplicates",{{"risk_reason", Text.Trim, type text}}),
+				    #"Capitalized Each Word" = Table.TransformColumns(#"Trimmed Text",{{"risk_reason", Text.Proper, type text}})
+				in
+				    #"Capitalized Each Word"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

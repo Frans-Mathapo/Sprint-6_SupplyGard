@@ -1,0 +1,47 @@
+relationship 3767ee37-cc18-466c-8254-6039e04cfc74
+	joinOnDateBehavior: datePartOnly
+	fromColumn: shipments.shipment_date
+	toColumn: LocalDateTable_84840e3a-96d3-4694-944d-604812c223e2.Date
+
+relationship 1f39f3fa-bb36-4ae1-821d-465436ccc768
+	joinOnDateBehavior: datePartOnly
+	fromColumn: customers.registration_date
+	toColumn: LocalDateTable_4e45143d-5061-4ff3-b0c0-59b1258d1871.Date
+
+relationship AutoDetected_a7bf4afb-1600-4ebf-913f-778472ee2038
+	fromColumn: shipments.customer_id
+	toColumn: customers.customer_id
+
+relationship 59144d42-45fc-4c22-8284-9c150bd628ed
+	joinOnDateBehavior: datePartOnly
+	fromColumn: deliveries.delivery_date
+	toColumn: LocalDateTable_93a34f84-203c-4d90-a167-fe1b869952f4.Date
+
+relationship AutoDetected_b85cf9df-9dd9-4723-88a7-5624c86a01fb
+	crossFilteringBehavior: bothDirections
+	fromColumn: shipments.shipment_id
+	toColumn: deliveries.shipment_id
+
+relationship AutoDetected_7b41c56e-2a40-4bd6-af32-0f260d423b15
+	fromColumn: deliveries.driver_id
+	toColumn: drivers.driver_id
+
+relationship AutoDetected_8c6d2e75-1272-4bd8-8891-946fea88f06d
+	fromColumn: deliveries.vehicle_id
+	toColumn: vehicles.vehicle_id
+
+relationship 8f0d3314-7abe-4b59-bbe1-0d06e8c2186e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: exchange_rates.date
+	toColumn: LocalDateTable_7e036313-6a5e-47da-86a2-48a25340d394.Date
+
+relationship ab8a2f98-0400-513c-7d62-eac0bd1c6b09
+	crossFilteringBehavior: bothDirections
+	fromColumn: deliveries.delivery_id
+	toColumn: delivery_labels.delivery_id
+
+relationship 6db9071a-841e-9696-1b12-9b116e8bbc62
+	crossFilteringBehavior: bothDirections
+	fromColumn: shipments.warehouse_id
+	toColumn: warehouses.warehouse_id
+

@@ -1,0 +1,191 @@
+table shipments
+	lineageTag: 536a2b6f-da6a-4bfb-a320-d382155d7c55
+
+	measure Measure
+		lineageTag: 3e86249d-c008-4cc6-83b9-5610f027ae04
+
+		annotation 43dbc3e8-3a1c-4b6f-9923-b49ff7d6691c = True
+
+	measure 'Total Shipments' = COUNT(shipments[shipment_id])
+		formatString: 0
+		lineageTag: 22823fba-f772-437e-8d22-73a340615bf5
+
+	column shipment_id
+		dataType: string
+		lineageTag: 2c34f10e-6641-4652-8bea-fd9c68c15d93
+		summarizeBy: none
+		sourceColumn: shipment_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: string
+		lineageTag: adbd5ef2-5972-446d-bab5-c60d78c67d0a
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column warehouse_id
+		dataType: string
+		lineageTag: fe011be5-b3c6-4734-ba7b-3132e617015f
+		summarizeBy: none
+		sourceColumn: warehouse_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column shipment_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f9afce0d-4797-4dd8-aba9-e201b47f9af0
+		summarizeBy: none
+		sourceColumn: shipment_date
+
+		variation Variation
+			isDefault
+			relationship: 3767ee37-cc18-466c-8254-6039e04cfc74
+			defaultHierarchy: LocalDateTable_84840e3a-96d3-4694-944d-604812c223e2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column shipment_type
+		dataType: string
+		lineageTag: e31586d4-ebd0-4e95-9f2b-b39a09f40b70
+		summarizeBy: none
+		sourceColumn: shipment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivery_method
+		dataType: string
+		lineageTag: 4066d245-f4ad-4c61-a355-d55b08e944bf
+		summarizeBy: none
+		sourceColumn: delivery_method
+
+		annotation SummarizationSetBy = Automatic
+
+	column weight_kg
+		dataType: double
+		lineageTag: 8de44eb4-61e9-4f16-a25e-81a00d562fea
+		summarizeBy: sum
+		sourceColumn: weight_kg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column declared_value_zar
+		dataType: double
+		lineageTag: 7003d916-4db9-4e2e-823e-48705c3bae72
+		summarizeBy: sum
+		sourceColumn: declared_value_zar
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column distance_km
+		dataType: double
+		lineageTag: 89d69613-291e-409c-9e81-321f4f34f020
+		summarizeBy: sum
+		sourceColumn: distance_km
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column priority
+		dataType: string
+		lineageTag: c6a745f1-652f-4bc0-90dd-ca7e0c8f812d
+		summarizeBy: none
+		sourceColumn: priority
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day_Name = FORMAT(shipments[shipment_date],"dddd")
+		lineageTag: 86a37aa6-461f-49d5-be62-fe5ead650051
+		summarizeBy: none
+		sortByColumn: Day_Number
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month_Year = FORMAT(shipments[shipment_date], "MM YYYY")
+		lineageTag: ecdb9ad3-86b4-4d97-bf97-9773564831a0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day_Number = WEEKDAY(shipments[shipment_date], 2)
+		formatString: 0
+		lineageTag: ea07f15c-364a-4c4f-9b4d-52b23d79c336
+		summarizeBy: sum
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Repeated Customer Delay Score' =
+			
+			VAR CurrentCustomer = shipments[customer_id]
+			
+			VAR NumberOfLateDeliveries =
+			    CALCULATE(
+			        COUNTROWS(delivery_labels),
+			        delivery_labels[is_late] = 1,
+			        FILTER(
+			            ALL(shipments),
+			            shipments[customer_id] = CurrentCustomer
+			        )
+			    )
+			
+			RETURN
+			    IF(
+			        NumberOfLateDeliveries >= 2,
+			        20,
+			        0
+			    )
+		formatString: 0
+		lineageTag: 6295e489-9b5d-479b-ad30-d6a9189faaea
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition shipments = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\E1023411\OneDrive - Sanlam Life Insurance Limited\Documents\Project\Sprint 5\supplyguard_data\supplyguard_data\shipments.csv"),[Delimiter=",", Columns=10, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"shipment_id", type text}, {"customer_id", type text}, {"warehouse_id", type text}, {"shipment_date", type date}, {"shipment_type", type text}, {"delivery_method", type text}, {"weight_kg", type text}, {"declared_value_zar", type text}, {"distance_km", type text}, {"priority", type text}}),
+				    #"Kept Duplicates" = let columnNames = {"shipment_id"}, addCount = Table.Group(#"Changed Type", columnNames, {{"Count", Table.RowCount, type number}}), selectDuplicates = Table.SelectRows(addCount, each [Count] > 1), removeCount = Table.RemoveColumns(selectDuplicates, "Count") in Table.Join(#"Changed Type", columnNames, removeCount, columnNames, JoinKind.Inner),
+				    #"Kept Duplicates1" = let columnNames = {"shipment_id"}, addCount = Table.Group(#"Kept Duplicates", columnNames, {{"Count", Table.RowCount, type number}}), selectDuplicates = Table.SelectRows(addCount, each [Count] > 1), removeCount = Table.RemoveColumns(selectDuplicates, "Count") in Table.Join(#"Kept Duplicates", columnNames, removeCount, columnNames, JoinKind.Inner),
+				    #"Removed Duplicates" = Table.Distinct(#"Kept Duplicates1"),
+				    #"Replaced Value" = Table.ReplaceValue(#"Removed Duplicates","","Uknown",Replacer.ReplaceValue,{"shipment_type"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","","Unknown",Replacer.ReplaceValue,{"delivery_method"}),
+				    #"Replaced Value2" = Table.ReplaceValue(#"Replaced Value1","","Unknown",Replacer.ReplaceValue,{"priority"}),
+				    #"Removed Duplicates1" = Table.Distinct(#"Replaced Value2", {"shipment_id"}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Removed Duplicates1",{{"shipment_type", Text.Trim, type text}, {"delivery_method", Text.Trim, type text}, {"priority", Text.Trim, type text}}),
+				    #"Capitalized Each Word" = Table.TransformColumns(#"Trimmed Text",{{"shipment_type", Text.Proper, type text}, {"delivery_method", Text.Proper, type text}, {"priority", Text.Proper, type text}}),
+				    #"Trimmed Text1" = Table.TransformColumns(#"Capitalized Each Word",{{"priority", Text.Trim, type text}}),
+				    #"Capitalized Each Word1" = Table.TransformColumns(#"Trimmed Text1",{{"priority", Text.Proper, type text}}),
+				    #"Cleaned Text" = Table.TransformColumns(#"Capitalized Each Word1",{{"distance_km", Text.Clean, type text}, {"priority", Text.Clean, type text}, {"delivery_method", Text.Clean, type text}}),
+				    #"Replaced Value3" = Table.ReplaceValue(#"Cleaned Text",""" ""","""""",Replacer.ReplaceText,{"weight_kg"}),
+				    #"Replaced Value4" = Table.ReplaceValue(#"Replaced Value3",".",",",Replacer.ReplaceText,{"weight_kg"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value4",{{"weight_kg", type number}}),
+				    #"Replaced Value5" = Table.ReplaceValue(#"Changed Type1",".",",",Replacer.ReplaceText,{"declared_value_zar"}),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Replaced Value5",{{"declared_value_zar", type number}}),
+				    #"Replaced Value6" = Table.ReplaceValue(#"Changed Type2",".",",",Replacer.ReplaceText,{"distance_km"}),
+				    #"Changed Type3" = Table.TransformColumnTypes(#"Replaced Value6",{{"distance_km", type number}}),
+				    #"Removed Errors" = Table.RemoveRowsWithErrors(#"Changed Type3", {"declared_value_zar"}),
+				    #"Changed Type4" = Table.TransformColumnTypes(#"Removed Errors",{{"shipment_date", type date}})
+				in
+				    #"Changed Type4"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

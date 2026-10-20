@@ -1,0 +1,31 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-ZA
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["shipments","customers","deliveries","drivers","vehicles","warehouses","delivery_labels","exchange_rates"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table shipments
+ref table DateTableTemplate_8dfc8085-5367-474c-8784-c848dd49feba
+ref table LocalDateTable_84840e3a-96d3-4694-944d-604812c223e2
+ref table customers
+ref table LocalDateTable_4e45143d-5061-4ff3-b0c0-59b1258d1871
+ref table deliveries
+ref table LocalDateTable_93a34f84-203c-4d90-a167-fe1b869952f4
+ref table drivers
+ref table vehicles
+ref table warehouses
+ref table delivery_labels
+ref table exchange_rates
+ref table LocalDateTable_7e036313-6a5e-47da-86a2-48a25340d394
+
+ref cultureInfo en-US
+

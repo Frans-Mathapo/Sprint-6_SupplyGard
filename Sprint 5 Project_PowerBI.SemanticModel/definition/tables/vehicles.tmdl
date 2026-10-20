@@ -1,0 +1,89 @@
+table vehicles
+	lineageTag: e9a7cc1f-04b0-4870-9624-310f0ba71655
+
+	column vehicle_id
+		dataType: string
+		lineageTag: 23b78a9a-1030-4f92-94c0-23f7da0681b2
+		summarizeBy: none
+		sourceColumn: vehicle_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column vehicle_type
+		dataType: string
+		lineageTag: abf90ad1-3366-4d79-97c7-3b16d448c3b9
+		summarizeBy: none
+		sourceColumn: vehicle_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column vehicle_age_years
+		dataType: int64
+		formatString: 0
+		lineageTag: f7ba6c51-1772-4e67-8626-9291ee8f36a5
+		summarizeBy: none
+		sourceColumn: vehicle_age_years
+
+		annotation SummarizationSetBy = Automatic
+
+	column capacity_kg
+		dataType: int64
+		formatString: 0
+		lineageTag: 55d0830c-c9bd-4fa0-a2f2-e74f0460cead
+		summarizeBy: none
+		sourceColumn: capacity_kg
+
+		annotation SummarizationSetBy = Automatic
+
+	column fuel_type
+		dataType: string
+		lineageTag: f81e6fb4-9267-4094-8777-71a29ec67bcd
+		summarizeBy: none
+		sourceColumn: fuel_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column maintenance_score
+		dataType: double
+		lineageTag: 44f41158-f924-4021-a674-1ea4257e7744
+		summarizeBy: none
+		sourceColumn: maintenance_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column current_mileage_km
+		dataType: double
+		lineageTag: 572d314e-6de0-4be9-9f6e-0d96c722006b
+		summarizeBy: none
+		sourceColumn: current_mileage_km
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition vehicles = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\E1023411\OneDrive - Sanlam Life Insurance Limited\Documents\Project\Sprint 5\supplyguard_data\supplyguard_data\vehicles.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"vehicle_id", type text}, {"vehicle_type", type text}, {"vehicle_age_years", Int64.Type}, {"capacity_kg", Int64.Type}, {"fuel_type", type text}, {"maintenance_score", type text}, {"current_mileage_km", type text}}),
+				    #"Removed Duplicates" = Table.Distinct(#"Changed Type", {"vehicle_id"}),
+				    #"Trimmed Text" = Table.TransformColumns(#"Removed Duplicates",{{"vehicle_type", Text.Trim, type text}}),
+				    #"Trimmed Text1" = Table.TransformColumns(#"Trimmed Text",{{"vehicle_type", Text.Trim, type text}}),
+				    #"Capitalized Each Word" = Table.TransformColumns(#"Trimmed Text1",{{"vehicle_type", Text.Proper, type text}}),
+				    #"Trimmed Text2" = Table.TransformColumns(#"Capitalized Each Word",{{"fuel_type", Text.Trim, type text}}),
+				    #"Capitalized Each Word1" = Table.TransformColumns(#"Trimmed Text2",{{"fuel_type", Text.Proper, type text}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Capitalized Each Word1",".",",",Replacer.ReplaceText,{"maintenance_score"}),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Replaced Value",{{"maintenance_score", type number}}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Changed Type1",".",",",Replacer.ReplaceText,{"current_mileage_km"}),
+				    #"Changed Type2" = Table.TransformColumnTypes(#"Replaced Value1",{{"maintenance_score", type number}, {"current_mileage_km", type number}})
+				in
+				    #"Changed Type2"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
